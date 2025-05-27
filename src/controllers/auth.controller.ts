@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { config } from "../config/app.config";
-import { HTTPSTATUS } from "../config/http.config";
-import passport from "passport";
 import { asyncHandler } from "../middleware/asyncHandler";
+import { registerSchema } from "../validation/auth.validation";
+import { HTTPSTATUS } from "../config/http.config";
+import { registerUserService } from "../services/auth.service";
 
 export const googleLoginCallback = asyncHandler(
   async (req: Request, res: Response) => {
@@ -17,5 +18,20 @@ export const googleLoginCallback = asyncHandler(
     return res.redirect(
       `${config.FRONTEND_ORIGIN}/workspace/${currentWorkspace}`
     );
+  }
+);
+
+
+export const registerUserController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const body = registerSchema.parse({
+      ...req.body,
+    });
+
+    await registerUserService(body);
+
+    return res.status(HTTPSTATUS.CREATED).json({
+      message: "User created successfully",
+    });
   }
 );

@@ -20,4 +20,4 @@ authRoutes.get(
   googleLoginCallback
 );
 
-export default authRoutes;
+export default authRoutes; 
