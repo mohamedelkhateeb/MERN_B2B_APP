@@ -10,6 +10,8 @@ import { BadRequestException } from "./utils/appError";
 import "./config/passport.config";
 import passport from "passport";
 import authRoutes from "./routes/auth.route";
+import userRoutes from "./routes/user.route";
+import isAuthenticated from "./middleware/isAuthenticated.middleware";
 
 const app = express();
 const BASE_PATH = config.BASE_PATH;
@@ -38,17 +40,8 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
-
-app.get(`/`, (req: Request, res: Response, next: NextFunction) => {
-  // throw new BadRequestException(
-  //   "Bad Request",
-  //   ErrorCodeEnum.INTERNAL_SERVER_ERROR
-  // );
-
-  res.send("Hello From Node JS With Express AND Typescript Starter ");
-});
-
 app.use(`${BASE_PATH}/auth`, authRoutes);
+app.use(`${BASE_PATH}/user`, isAuthenticated, userRoutes);
 
 app.use(errorHandler);
 app.listen(config.PORT, async () => {
