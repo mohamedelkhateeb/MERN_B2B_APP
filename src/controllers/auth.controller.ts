@@ -40,7 +40,7 @@ export const loginController = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     passport.authenticate(
       "local",
-      
+
       (
         err: Error | null,
         user: Express.User | false,
@@ -68,5 +68,22 @@ export const loginController = asyncHandler(
         });
       }
     )(req, res, next);
+  }
+);
+
+export const logOutController = asyncHandler(
+  async (req: Request, res: Response) => {
+    req.logout((err) => {
+      if (err) {
+        console.error("Logout error:", err);
+        return res
+          .status(HTTPSTATUS.INTERNAL_SERVER_ERROR)
+          .json({ error: "Failed to log out" });
+      }
+    });
+    req.session = null;
+    return res
+      .status(HTTPSTATUS.OK)
+      .json({ message: "Logged out successfully" });
   }
 );
